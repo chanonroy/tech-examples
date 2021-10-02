@@ -14,3 +14,5 @@ const productsSlice = createSlice({
   initialState,
   reducers: {},
 });
+
+export default productsSlice.reducer;
