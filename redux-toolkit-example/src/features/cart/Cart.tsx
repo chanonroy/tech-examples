@@ -1,12 +1,19 @@
 import React from "react";
 import styles from "./Cart.module.css";
-import { useAppSelector } from "../../app/hooks";
-import { getTotalPrice } from "./cartSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { getTotalPrice, removeFromCart, udpateQuantity } from "./cartSlice";
 
 export function Cart() {
+  const dispatch = useAppDispatch()
   const products = useAppSelector((state) => state.products.products);
   const items = useAppSelector((state) => state.cart.items);
   const totalPrice = useAppSelector(getTotalPrice);
+
+  const onQuantityChanged = (e: React.FocusEvent<HTMLInputElement>, id: string) => {
+    const quantity = Number(e.target.value) || 0;
+    dispatch(udpateQuantity({ id, quantity }))
+  }
+
   return (
     <main className="page">
       <h1>Shopping Cart</h1>
@@ -28,12 +35,14 @@ export function Cart() {
                   type="text"
                   className={styles.input}
                   defaultValue={quantity}
+                  onBlur={(e) => onQuantityChanged(e, id)}
                 />
               </td>
               <td>${products[id].price}</td>
               <td>
                 <button
                   aria-label={`Remove ${products[id].name} from Shopping Cart`}
+                  onClick={() => dispatch(removeFromCart(id))}
                 >
                   X
                 </button>
