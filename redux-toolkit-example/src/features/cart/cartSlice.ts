@@ -1,5 +1,6 @@
-import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../app/store";
+import { createAsyncThunk, createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CartItems, checkout } from "../../app/api";
+import { RootState } from "../../app/store";
 
 type CheckoutState = "LOADING" | "READY" | "ERROR"
 
@@ -12,6 +13,12 @@ const initialState: CartState = {
   items: {},
   checkoutState: "READY"
 };
+
+// This is really cool
+export const checkoutCart = createAsyncThunk("cart/checkout", async (items: CartItems) => {
+  const response = await checkout(items);
+  return response
+})
 
 const cartSlice = createSlice({
   name: "cart",
@@ -34,23 +41,17 @@ const cartSlice = createSlice({
     }
   },
   extraReducers: function(builder) {
-    builder.addCase("cart/checkout/pending", (state, _) => {
+    builder.addCase(checkoutCart.pending, (state, _) => {
       state.checkoutState = "LOADING"
     })
-    builder.addCase("cart/checkout/fulfilled", (state, _) => {
+    builder.addCase(checkoutCart.fulfilled, (state, _) => {
       state.checkoutState = "READY"
+    })
+    builder.addCase(checkoutCart.rejected, (state, _) => {
+      state.checkoutState = "ERROR"
     })
   }
 });
-
-export function checkout() {
-  return function checkoutThunk(dispatch: AppDispatch) {
-    dispatch({ type: "cart/checkout/pending" })
-    setTimeout(() => {
-      dispatch({ type: "cart/checkout/fulfilled" })
-    }, 500)
-  }
-}
 
 export const { addToCart, removeFromCart, udpateQuantity } = cartSlice.actions;
 export default cartSlice.reducer;
