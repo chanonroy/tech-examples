@@ -1,5 +1,5 @@
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
+import { AppDispatch, RootState } from "../../app/store";
 
 type CheckoutState = "LOADING" | "READY" | "ERROR"
 
@@ -34,11 +34,23 @@ const cartSlice = createSlice({
     }
   },
   extraReducers: function(builder) {
-    builder.addCase("cart/checkout/pending", (state, action) => {
+    builder.addCase("cart/checkout/pending", (state, _) => {
       state.checkoutState = "LOADING"
+    })
+    builder.addCase("cart/checkout/fulfilled", (state, _) => {
+      state.checkoutState = "READY"
     })
   }
 });
+
+export function checkout() {
+  return function checkoutThunk(dispatch: AppDispatch) {
+    dispatch({ type: "cart/checkout/pending" })
+    setTimeout(() => {
+      dispatch({ type: "cart/checkout/fulfilled" })
+    }, 500)
+  }
+}
 
 export const { addToCart, removeFromCart, udpateQuantity } = cartSlice.actions;
 export default cartSlice.reducer;
