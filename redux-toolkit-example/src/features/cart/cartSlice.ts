@@ -24,7 +24,9 @@ const initialState: CartState = {
 // This is really cool
 export const checkoutCart = createAsyncThunk(
   "cart/checkout",
-  async (items: CartItems) => {
+  async (_, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const items = state.cart.items;
     const response = await checkout(items);
     return response;
   }
@@ -65,7 +67,7 @@ const cartSlice = createSlice({
           state.checkoutState = "READY";
           state.items = {};
         } else {
-          state.checkoutState = "ERROR"
+          state.checkoutState = "ERROR";
         }
       }
     );
