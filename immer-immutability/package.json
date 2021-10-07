@@ -1,0 +1,9 @@
+{
+  "name": "immer-immutability",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "immer": "^9.0.6"
+  }
+}
