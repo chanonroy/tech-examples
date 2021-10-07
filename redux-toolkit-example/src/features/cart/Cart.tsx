@@ -1,32 +1,41 @@
 import React from "react";
-import classNames from "classnames"
+import classNames from "classnames";
 import styles from "./Cart.module.css";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { checkoutCart, getTotalPrice, removeFromCart, udpateQuantity } from "./cartSlice";
+import {
+  checkoutCart,
+  getTotalPrice,
+  removeFromCart,
+  udpateQuantity,
+} from "./cartSlice";
 
 export function Cart() {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.products.products);
   const items = useAppSelector((state) => state.cart.items);
   const totalPrice = useAppSelector(getTotalPrice);
 
-  const checkoutState = useAppSelector(state => state.cart.checkoutState)
+  const checkoutState = useAppSelector((state) => state.cart.checkoutState);
+  const errorMessage = useAppSelector((state) => state.cart.errorMessage);
 
-  const onQuantityChanged = (e: React.FocusEvent<HTMLInputElement>, id: string) => {
+  const onQuantityChanged = (
+    e: React.FocusEvent<HTMLInputElement>,
+    id: string
+  ) => {
     const quantity = Number(e.target.value) || 0;
-    dispatch(udpateQuantity({ id, quantity }))
-  }
+    dispatch(udpateQuantity({ id, quantity }));
+  };
 
   const onCheckout = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    dispatch(checkoutCart(items))
-  }
+    e.preventDefault();
+    dispatch(checkoutCart(items));
+  };
 
   const tableClasses = classNames({
     [styles.table]: true,
-    [styles.checkoutError]: checkoutState === 'ERROR',
-    [styles.checkoutLoading]: checkoutState === 'LOADING'
-  })
+    [styles.checkoutError]: checkoutState === "ERROR",
+    [styles.checkoutLoading]: checkoutState === "LOADING",
+  });
 
   return (
     <main className="page">
@@ -74,6 +83,9 @@ export function Cart() {
         </tfoot>
       </table>
       <form onSubmit={onCheckout}>
+        {checkoutState === "ERROR" && errorMessage && (
+          <p className={styles.errorBox}>{errorMessage}</p>
+        )}
         <button className={styles.button} type="submit">
           Checkout
         </button>

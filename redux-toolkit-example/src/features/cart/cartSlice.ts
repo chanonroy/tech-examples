@@ -7,11 +7,13 @@ type CheckoutState = "LOADING" | "READY" | "ERROR"
 export interface CartState {
   items: { [productID: string]: number };
   checkoutState: CheckoutState
+  errorMessage: string;
 }
 
 const initialState: CartState = {
   items: {},
-  checkoutState: "READY"
+  checkoutState: "READY",
+  errorMessage: ""
 };
 
 // This is really cool
@@ -41,14 +43,15 @@ const cartSlice = createSlice({
     }
   },
   extraReducers: function(builder) {
-    builder.addCase(checkoutCart.pending, (state, _) => {
+    builder.addCase(checkoutCart.pending, (state) => {
       state.checkoutState = "LOADING"
     })
-    builder.addCase(checkoutCart.fulfilled, (state, _) => {
+    builder.addCase(checkoutCart.fulfilled, (state) => {
       state.checkoutState = "READY"
     })
-    builder.addCase(checkoutCart.rejected, (state, _) => {
+    builder.addCase(checkoutCart.rejected, (state, action) => {
       state.checkoutState = "ERROR"
+      state.errorMessage = action.error.message || ""
     })
   }
 });
