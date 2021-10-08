@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "lib": ["ES6", "DOM"],
+    "target": "ES6",
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "rootDir": "."
+  },
+  "exclude": ["node_modules"]
+}
