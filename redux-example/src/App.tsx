@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./App.scss";
 import useStoreSelector from "./store/selectors/useStoreSelector";
 
 function App() {
@@ -8,7 +8,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div>{count}</div>
+        <div style={{ marginBottom: 20 }}>{count}</div>
+        <button>Increment</button>
       </header>
     </div>
   );
