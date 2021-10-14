@@ -1,3 +1,4 @@
-// TODO: add actionTypes
+import { DecreaseCounterAction } from "./actions/decreaseCounter/types";
+import { IncreaseCounterAction } from "./actions/increaseCounter/types";
 
-export type AppAction = {}
+export type AppAction = IncreaseCounterAction | DecreaseCounterAction
