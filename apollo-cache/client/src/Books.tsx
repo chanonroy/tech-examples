@@ -1,6 +1,5 @@
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { useState } from "react";
 
 const BookFragment = gql`
   fragment MyBook on Book {
@@ -31,6 +30,10 @@ const getBooksNext = gql`
 
   ${BookFragment}
 `;
+
+// 1. fragment does not matter
+// 2. if parent query is not finished, child query fetches network
+// 3. if child query is 'cache-only', it will poll itself until it gets data.
 
 export function BooksNext() {
   const { data, loading } = useQuery(getBooksNext, {
