@@ -1,0 +1,58 @@
+{
+  "name": "swc-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.2.165",
+    "@types/jest": "^27.4.1",
+    "@types/react": "^18.0.5",
+    "@types/react-test-renderer": "^18.0.0",
+    "jest": "^27.5.1",
+    "react-test-renderer": "^18.0.0",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@swc/jest": "^0.2.20",
+    "react": "^18.0.0"
+  },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/**/*.test.{ts,tsx,js,jsx}",
+      "<rootDir>/*.test.{ts,tsx,js,jsx}"
+    ],
+    "collectCoverage": true,
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "transform": {
+      "^.+\\.(t|j)sx?$": [
+        "@swc/jest",
+        {
+          "sourceMaps": true,
+          "jsc": {
+            "parser": {
+              "syntax": "typescript",
+              "tsx": true
+            },
+            "transform": {
+              "react": {
+                "runtime": "automatic"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "testEnvironment": "node"
+  }
+}
