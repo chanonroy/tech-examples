@@ -20,6 +20,10 @@ Structure
 - `tmp` - Temporary files (like cache and pid files).
 - `vendor` - A place for all third-party code. In a typical Rails application this includes vendored gems.
 
+Interesting commands
+
+- `bin/rails routes`
+
 Other things you may want to cover:
 
 - Ruby version
