@@ -3,3 +3,6 @@
 <% @todos.each do |todo| %>
     <li> <%= link_to todo.title, todo_path(todo.id) %></li>
 <% end %>
+
+<br />
+<%= link_to "New Todo Item", new_todo_path %>
