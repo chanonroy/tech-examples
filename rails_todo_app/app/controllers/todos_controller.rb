@@ -3,15 +3,16 @@ class TodosController < ApplicationController
         @todos = Todo.all
     end
 
-    def show 
-        @todo = Todo.find(params[:id])
+    def create
+        @todo = Todo.create todo_params
+        redirect_to todo_path(@todo)
     end
 
     def new
         @todo = Todo.new
     end
 
-    def edit
+    def show 
         @todo = Todo.find(params[:id])
     end
 
@@ -21,9 +22,13 @@ class TodosController < ApplicationController
         redirect_to todo_path(@todo)
     end
 
-    def create
-        @todo = Todo.create todo_params
-        redirect_to todo_path(@todo)
+    def edit
+        @todo = Todo.find(params[:id])
+    end
+
+    def destroy
+        Todo.find(params[:id]).destroy
+        redirect_to root_path
     end
 
     private
