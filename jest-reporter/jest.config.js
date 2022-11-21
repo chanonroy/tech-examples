@@ -1,5 +1,3 @@
-const config = {
-  verbose: true,
+module.exports = {
+  reporters: ["<rootDir>/test-reporter/index.js"],
 };
-
-module.exports = config;
