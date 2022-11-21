@@ -1,17 +1,25 @@
 import { Reporter, TestContext } from "@jest/reporters";
-import { AggregatedResult, AssertionResult } from "@jest/test-result";
+import { AggregatedResult } from "@jest/test-result";
 import { Config } from "@jest/types";
 
-export default class CustomReporter implements Pick<Reporter, "onRunComplete"> {
+type CustomReporter = Pick<Reporter, "onRunComplete">;
+
+interface Options {
+  useReporter: boolean;
+}
+
+export default class TestReporter implements CustomReporter {
   constructor(
     private config: Config.InitialOptions,
-    private options: any,
-    private context: TestContext
+    private options: Options
   ) {}
 
-  onRunComplete(_: Set<TestContext>, results: AggregatedResult) {
-    console.log({ _ });
-    console.log("Custom reporter output:");
-    console.log("global config: ", this.config);
+  onRunComplete(context: Set<TestContext>, results: AggregatedResult) {
+    const isCi = this.config.ci;
+    const useReporter = this.options.useReporter;
+
+    if (isCi || useReporter) {
+      console.log(results);
+    }
   }
 }
