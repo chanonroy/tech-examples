@@ -1,0 +1,12 @@
+{
+  "name": "jest-reporter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "yarn jest"
+  },
+  "devDependencies": {
+    "jest": "^29.3.1"
+  }
+}
