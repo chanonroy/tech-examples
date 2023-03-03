@@ -13,17 +13,31 @@ declare module "slate" {
   }
 }
 
-const initialValue: any = [];
+const initialValue: any = [
+  {
+    type: "paragraph",
+    children: [{ text: "Edit me" }],
+  },
+];
 
 const App = () => {
   // Create a Slate editor object that won't change across renders.
   const [editor] = useState(() => withReact(createEditor()));
   return (
-    <div style={{ backgroundColor: "lightgrey" }}>
+    <div style={{ backgroundColor: "lightgrey", padding: 10, width: 300 }}>
       <p>Slate editor</p>
-      <Slate editor={editor} value={initialValue}>
-        <Editable />
-      </Slate>
+      <div
+        style={{
+          backgroundColor: "white",
+          height: 100,
+          padding: 10,
+          borderRadius: 5,
+        }}
+      >
+        <Slate editor={editor} value={initialValue}>
+          <Editable />
+        </Slate>
+      </div>
     </div>
   );
 };
