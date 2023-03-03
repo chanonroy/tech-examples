@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BaseEditor, createEditor } from "slate";
 import { Slate, Editable, withReact, ReactEditor } from "slate-react";
+import HoveringToolbar from "./HoveringToolbar";
 
 type CustomText = { text: string };
 type CustomElement = { type: "paragraph"; children: CustomText[] };
@@ -35,6 +36,7 @@ const App = () => {
         }}
       >
         <Slate editor={editor} value={initialValue}>
+          <HoveringToolbar />
           <Editable />
         </Slate>
       </div>
