@@ -13,54 +13,6 @@ import java.util.concurrent.Future;
 public class App {
     public static void main(String[] args) {
         String csvFile = "large.csv";
-        int numThreads = Runtime.getRuntime().availableProcessors();
-        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
-        List<Future<String[]>> futures = new ArrayList<>();
-
-        // Load CSV from resources
-        try (BufferedReader br = new BufferedReader(new java.io.InputStreamReader(
-                App.class.getClassLoader().getResourceAsStream(csvFile)))) {
-            if (br == null) {
-                System.err.println("Error: large.csv not found in resources.");
-                executor.shutdown();
-                return;
-            }
-            String line;
-            while ((line = br.readLine()) != null) {
-                final String csvLine = line;
-                futures.add(executor.submit(new Callable<String[]>() {
-                    @Override
-                    public String[] call() {
-                        // Simple CSV split, does not handle quoted commas
-                        return csvLine.split(",");
-                    }
-                }));
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-            executor.shutdown();
-            return;
-        }
-
-        // Aggregate city counts using a thread-safe map
-        java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = new java.util.concurrent.ConcurrentHashMap<>();
-        for (Future<String[]> future : futures) {
-            try {
-                String[] fields = future.get();
-                if (fields.length >= 4 && !fields[3].equalsIgnoreCase("city")) { // skip header
-                    String city = fields[3];
-                    cityCounts.merge(city, 1, Integer::sum);
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Error parsing line: " + e.getMessage());
-            }
-        }
-// Removed unused concurrent imports
-
-
-public class App {
-    public static void main(String[] args) {
-        String csvFile = "large.csv";
         // Read all lines from CSV
         List<String> lines = new ArrayList<>();
 
