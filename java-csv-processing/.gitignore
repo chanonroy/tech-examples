@@ -2,6 +2,9 @@
 /app/build/
 /build/
 
+# Ignore Gradle cache
+.gradle/
+
 # Ignore IDE files
 *.iml
 .idea/

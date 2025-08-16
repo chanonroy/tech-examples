@@ -13,45 +13,45 @@ import java.util.concurrent.Future;
 public class App {
     public static void main(String[] args) {
         String csvFile = "large.csv";
-        // Read all lines from CSV
-        List<String> lines = new ArrayList<>();
-
-        // Load CSV from resources
-        try (BufferedReader br = new BufferedReader(new java.io.InputStreamReader(
-                App.class.getClassLoader().getResourceAsStream(csvFile)))) {
-            if (br == null) {
-                System.err.println("Error: large.csv not found in resources.");
-                return;
-            }
+        java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = new java.util.concurrent.ConcurrentHashMap<>();
+        java.io.InputStream is = App.class.getClassLoader().getResourceAsStream(csvFile);
+        if (is == null) {
+            System.err.println("Resource not found: " + csvFile);
+            return;
+        }
+        try (BufferedReader br = new BufferedReader(new java.io.InputStreamReader(is))) {
             String line;
             while ((line = br.readLine()) != null) {
-                lines.add(line);
+                String[] fields = line.split(",");
+                if (fields.length >= 4 && !fields[3].equalsIgnoreCase("city")) {
+                    String city = fields[3].trim();
+                    cityCounts.merge(city, 1, Integer::sum);
+                }
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
             return;
         }
-
-        // Aggregate city counts using a thread-safe map
-        java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = aggregateCities(lines);
-
-        // Print all city counts
         System.out.println("City counts:");
-        cityCounts.forEach((city, count) -> {
-            System.out.printf("%s: %d\n", city, count);
-        });
+        cityCounts.forEach((city, count) -> System.out.printf("%s: %d\n", city, count));
+        System.out.println("Total unique cities: " + cityCounts.size());
+
+        // Log memory usage
+        Runtime runtime = Runtime.getRuntime();
+        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.printf("Used memory: %.2f MB\n", usedMemory / (1024.0 * 1024.0));
     }
 
-    // Helper for testability
+    // Helper for testability (not used in main anymore)
     public static java.util.concurrent.ConcurrentHashMap<String, Integer> aggregateCities(List<String> lines) {
         java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = new java.util.concurrent.ConcurrentHashMap<>();
-        lines.parallelStream().forEach(csvLine -> {
+        lines.forEach(csvLine -> {
             String[] fields = csvLine.split(",");
             if (fields.length >= 4 && !fields[3].equalsIgnoreCase("city")) {
-                String city = fields[3];
+                String city = fields[3].trim();
                 cityCounts.merge(city, 1, Integer::sum);
             }
         });
         return cityCounts;
     }
-    }
+}
