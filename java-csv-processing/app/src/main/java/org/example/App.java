@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 public class App {
     public static void main(String[] args) {
         String csvFile = "large.csv";
-        java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = new java.util.concurrent.ConcurrentHashMap<>();
+        List<String> lines = new ArrayList<>();
         java.io.InputStream is = App.class.getClassLoader().getResourceAsStream(csvFile);
         if (is == null) {
             System.err.println("Resource not found: " + csvFile);
@@ -22,19 +22,34 @@ public class App {
         try (BufferedReader br = new BufferedReader(new java.io.InputStreamReader(is))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] fields = line.split(",");
-                if (fields.length >= 4 && !fields[3].equalsIgnoreCase("city")) {
-                    String city = fields[3].trim();
-                    cityCounts.merge(city, 1, Integer::sum);
-                }
+                lines.add(line);
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
             return;
         }
-        System.out.println("City counts:");
-        cityCounts.forEach((city, count) -> System.out.printf("%s: %d\n", city, count));
+        java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = aggregateCities(lines);
         System.out.println("Total unique cities: " + cityCounts.size());
+
+        // Find top 5 cities using a min-heap
+        int TOP_N = 5;
+        java.util.PriorityQueue<java.util.Map.Entry<String, Integer>> minHeap =
+            new java.util.PriorityQueue<>(TOP_N, java.util.Comparator.comparingInt(java.util.Map.Entry::getValue));
+        for (java.util.Map.Entry<String, Integer> entry : cityCounts.entrySet()) {
+            if (minHeap.size() < TOP_N) {
+                minHeap.offer(entry);
+            } else if (entry.getValue() > minHeap.peek().getValue()) {
+                minHeap.poll();
+                minHeap.offer(entry);
+            }
+        }
+        // Collect and sort top cities in descending order
+        java.util.List<java.util.Map.Entry<String, Integer>> topCities = new java.util.ArrayList<>(minHeap);
+        topCities.sort((a, b) -> Integer.compare(b.getValue(), a.getValue()));
+        System.out.println("Top 5 cities:");
+        for (java.util.Map.Entry<String, Integer> entry : topCities) {
+            System.out.printf("%s: %d\n", entry.getKey(), entry.getValue());
+        }
 
         // Log memory usage
         Runtime runtime = Runtime.getRuntime();
