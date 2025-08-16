@@ -1,3 +1,4 @@
+
 # Java CSV Processing Example
 
 This project demonstrates efficient processing of large CSV files in Java using multi-threading and concurrent data structures.
@@ -6,7 +7,7 @@ This project demonstrates efficient processing of large CSV files in Java using 
 - `app/` - Main application code and resources
 - `gradle/` - Gradle wrapper and configuration
 - `gradlew`, `gradlew.bat` - Gradle wrapper scripts
-- `settings.gradle.kts`, `gradle.properties` - Gradle configuration files
+- `settings.gradle`, `gradle.properties` - Gradle configuration files (Groovy DSL)
 
 ## How to Run
 1. **Run the main application:**
