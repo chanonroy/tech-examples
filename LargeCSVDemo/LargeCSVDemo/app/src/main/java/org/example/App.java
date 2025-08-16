@@ -33,15 +33,7 @@ public class App {
         }
 
         // Aggregate city counts using a thread-safe map
-        java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = new java.util.concurrent.ConcurrentHashMap<>();
-        lines.parallelStream().forEach(csvLine -> {
-            // Simple CSV split, does not handle quoted commas
-            String[] fields = csvLine.split(",");
-            if (fields.length >= 4 && !fields[3].equalsIgnoreCase("city")) { // skip header
-                String city = fields[3];
-                cityCounts.merge(city, 1, Integer::sum);
-            }
-        });
+        java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = aggregateCities(lines);
 
         // Print all city counts
         System.out.println("City counts:");
@@ -49,4 +41,17 @@ public class App {
             System.out.printf("%s: %d\n", city, count);
         });
     }
-}
+
+    // Helper for testability
+    public static java.util.concurrent.ConcurrentHashMap<String, Integer> aggregateCities(List<String> lines) {
+        java.util.concurrent.ConcurrentHashMap<String, Integer> cityCounts = new java.util.concurrent.ConcurrentHashMap<>();
+        lines.parallelStream().forEach(csvLine -> {
+            String[] fields = csvLine.split(",");
+            if (fields.length >= 4 && !fields[3].equalsIgnoreCase("city")) {
+                String city = fields[3];
+                cityCounts.merge(city, 1, Integer::sum);
+            }
+        });
+        return cityCounts;
+    }
+    }
